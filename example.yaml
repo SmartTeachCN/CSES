@@ -1,4 +1,4 @@
-version: 1 # 只能为 1
+version: 2 # 当前版本为 2
 
 configuration:
   name: 高三（12）班课表 # 任意 string
