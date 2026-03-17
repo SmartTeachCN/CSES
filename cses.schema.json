@@ -197,9 +197,9 @@
   "properties": {
     "version": {
       "title": "版本",
-      "description": "配置文件的 CSES 标准版本号，当前为 1。",
+      "description": "配置文件的 CSES 标准版本号，当前为 2。",
       "type": "integer",
-      "const": 1
+      "const": 2
     },
 
     "configuration": {
