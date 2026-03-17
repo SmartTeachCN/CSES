@@ -6,32 +6,33 @@ configuration:
   cycle:
     work_count: 11 # 大于 1 的整数，上课的总天数
     rest_count: 3 # 大于 1 的整数，休息的总天数
-    detail:
-      - type: work # work 或 rest，下同
+    spans:
+      - activity: work # work 或 rest，下同
         count: 6 # 1-work_count 的整数，下同
-      - type: rest 
+      - activity: rest 
         count: 1
-      - type: work
+      - activity: work
         count: 5
-      - type: rest
+      - activity: rest
         count: 2
+
 subjects:
   - name: 数学 # 任意 string
     simplified_name: 数 # 可选，任意 string，适合中文科目名，ClassIsland 等紧凑课程表软件一般需要
     teacher: 李梅 # 可选，任意 string
-    room: "101" # 可选，任意 string
+    location: "101" # 可选，任意 string
   - name: 语文
     simplified_name: 语
     teacher: 王芳
-    room: "102"
+    location: "102"
   - name: 英语
     simplified_name: 英
     teacher: 张伟
-    room: "103"
+    location: "103"
   - name: 物理
     simplified_name: 物
     teacher: 赵军
-    room: "104"
+    location: "104"
 
 schedules:
   - name: 星期一 # 任意 string

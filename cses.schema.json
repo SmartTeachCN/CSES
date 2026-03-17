@@ -1,6 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
+
   "definitions": {
     "class": {
       "title": "课程安排",
@@ -8,7 +9,7 @@
       "type": "object",
       "properties": {
         "subject": {
-          "title": "课程名",
+          "title": "课程名称",
           "type": "string",
           "description": "subjects 中任一 subject 的 name 字段。",
           "examples": [
@@ -18,7 +19,7 @@
         },
         "start_time": {
           "title": "开始时间",
-          "description": "课程开始时间，格式为 HH:MM:SS",
+          "description": "课程开始时间，格式为 HH:MM:SS。",
           "type": "string",
           "pattern": "([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d)",
           "examples": [
@@ -28,7 +29,7 @@
         },
         "end_time": {
           "title": "结束时间",
-          "description": "课程结束时间，格式为 HH:MM:SS",
+          "description": "课程结束时间，格式为 HH:MM:SS。",
           "type": "string",
           "pattern": "([01]\\d|2[0-3]):([0-5]\\d):([0-5]\\d)",
           "examples": [
@@ -43,6 +44,7 @@
         "end_time"
       ]
     },
+
     "schedule": {
       "title": "课程表",
       "description": "CSES 日课程表",
@@ -53,40 +55,25 @@
           "type": "string",
           "description": "课程表的名称",
           "examples": [
-            "all-mon"
+            "周一课表"
           ]
         },
         "enable_day": {
           "title": "启用日",
-          "type": "integer",
-          "description": "启用的日数，1-7 表示周一到周日",
-          "enum": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7
-          ]
-        },
-        "weeks": {
-          "title": "周数",
-          "type": "string",
-          "description": "周数，all 表示全周，odd 表示单周，even 表示双周",
-          "enum": [
-            "all",
-            "odd",
-            "even"
-          ]
+          "description": "课程表启用的日期，1 代表周期里的第一个工作日，2 代表周期里的第二个工作日，以此类推。",
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 1
+          }
         },
         "classes": {
           "title": "课程",
+          "description": "该课程在课程表内的时间安排。",
           "type": "array",
           "items": {
             "$ref": "#/definitions/class"
           },
-          "description": "课程安排数组",
           "examples": [
             [
               {
@@ -106,116 +93,254 @@
       "required": [
         "name",
         "enable_day",
-        "weeks",
         "classes"
       ]
     },
+
     "subject": {
       "title": "课程",
-      "description": "课程对象",
+      "description": "一个课程对象，包含课程基本信息。",
       "type": "object",
       "properties": {
         "name": {
           "title": "名称",
           "type": "string",
-          "description": "课程名称",
+          "description": "课程的名称。",
           "examples": [
             "数学",
             "语文"
           ]
         },
+        "simplified_name": {
+          "title": "简化名称",
+          "type": "string",
+          "description": "课程的简化名称，适合中文科目名，ClassIsland 等紧凑课程表软件一般需要。",
+          "examples": [
+            "数",
+            "语文"
+          ]
+        },
+        "location": {
+          "title": "地点",
+          "type": "string",
+          "description": "课程的地点。",
+          "examples": [
+            "A101",
+            "B202"
+          ]
+        },
         "teacher": {
           "title": "教师",
           "type": "string",
-          "description": "任课教师",
+          "description": "课程的教师。",
           "examples": [
             "张三",
             "李四"
-          ]
-        },
-        "room": {
-          "title": "教室",
-          "type": "string",
-          "description": "上课教室",
-          "examples": [
-            "101",
-            "102"
-          ]
-        },
-        "simplified_name": {
-          "title": "简称",
-          "type": "string",
-          "description": "课程简称",
-          "examples": [
-            "数",
-            "语"
           ]
         }
       },
       "required": [
         "name"
       ]
+    },
+
+    "span": {
+      "title": "时间跨度",
+      "description": "一个时间跨度，包含活动类型和持续时间。",
+      "type": "object",
+      "properties": {
+        "activity": {
+          "type": "string",
+          "enum": ["work", "rest"]
+        },
+        "count": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "required": [
+        "activity",
+        "count"
+      ]
+
+    },
+
+    "cycle": {
+      "title": "周期",
+      "description": "执行本配置文件的时间周期，内含工作日和休息日的总时间，以及具体的分配方式。",
+      "type": "object",
+      "properties": {
+        "work_count": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "rest_count": {
+          "type": "integer",
+          "minimum": 2
+        },
+        "spans": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/span"
+          }
+        }
+      },
+      "required": [
+        "work_count",
+        "rest_count",
+        "spans"
+      ]
     }
   },
+
   "properties": {
     "version": {
-      "const": 1,
+      "title": "版本",
+      "description": "配置文件的 CSES 标准版本号，当前为 1。",
       "type": "integer",
-      "title": "Version",
-      "description": "CSES 的版本号"
+      "const": 1
     },
+
+    "configuration": {
+      "title": "配置",
+      "description": "CSES 配置。",
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "名称",
+          "type": "string",
+          "description": "配置的名称。",
+          "examples": [
+            "2026年下学期"
+          ]
+        },
+
+        "description": {
+          "title": "描述",
+          "type": "string",
+          "description": "配置的描述。",
+          "examples": [
+            "2026年下学期的课程表"
+          ]
+        },
+        
+        "cycle": {
+          "title": "周期",
+          "description": "执行本 CSES 文档的周期，包含工作日和休息日的总时间，以及具体的分配方式。",
+          "type": "object",
+          "$ref": "#/definitions/cycle"
+        }
+      },
+      "examples": [
+        {
+          "name": "2026年下学期",
+          "description": "2026年下学期的课程表",
+          "cycle": {
+            "work_count": 5,
+            "rest_count": 2,
+            "spans": [
+              {
+                "activity": "work",
+                "count": 3
+              },
+              {
+                "activity": "rest",
+                "count": 1
+              }
+            ]
+          }
+        }
+      ],
+      "required": [
+        "name",
+        "description",
+        "cycle"
+      ]
+    },
+
     "subjects": {
       "title": "课程列表",
+      "description": "罗列出了可能包含在课程表内的所有课程。",
       "type": "array",
       "items": {
         "$ref": "#/definitions/subject"
       },
-      "description": "课程列表",
       "examples": [
-        [
-          {
-            "name": "数学",
-            "teacher": "张三",
-            "room": "101",
-            "simplified_name": "数"
-          },
-          {
-            "name": "语文",
-            "teacher": "李四",
-            "room": "102",
-            "simplified_name": "语"
-          }
-        ]
+        {
+          "name": "数学",
+          "simplified_name": "数",
+          "teacher": "李梅",
+          "location": "101"
+        },
+        {
+          "name": "语文",
+          "simplified_name": "语",
+          "location": "102"
+        },
+        {
+          "name": "C语言程序设计教程 - 实验课",
+          "teacher": "赵军",
+          "location": "A栋103"
+        }
       ]
     },
+
     "schedules": {
-      "title": "课程表列表",
+      "title": "日课程表列表",
+      "description": "包含所有日课程表，内含名称、启用日、课程安排等。",
       "type": "array",
       "items": {
+        "type": "object",
         "$ref": "#/definitions/schedule"
       },
-      "description": "课程表列表",
       "examples": [
         [
           {
-            "name": "all-mon",
-            "enable_day": 1,
-            "weeks": "all",
+            "name": "周一课表",
+            "enable_day": [
+              1,
+              7
+            ],
             "classes": [
               {
                 "subject": "数学",
-                "start_time": "08:50:00",
+                "start_time": "08:00:00",
                 "end_time": "08:40:00"
               },
               {
                 "subject": "语文",
-                "start_time": "13:30:00",
-                "end_time": "14:10:00"
+                "start_time": "08:40:00",
+                "end_time": "09:20:00"
+              }
+            ]
+          },
+          {
+            "name": "周二课表 - 单周",
+            "enable_day": [
+              2
+            ],
+            "classes": [
+              {
+                "subject": "数学",
+                "start_time": "08:00:00",
+                "end_time": "08:40:00"
+              },
+              {
+                "subject": "语文",
+                "start_time": "08:40:00",
+                "end_time": "09:20:00"
               }
             ]
           }
         ]
       ]
     }
-  }
+  },
+  "required": [
+    "version",
+    "configuration",
+    "subjects",
+    "schedules"
+  ]
 }
