@@ -9,6 +9,9 @@
 
 </div>
 
+> [!WARNING]
+> CSES v2 目前仍在修订中，尚未成为现行版本。CSES v1 仍是当前使用的正式版本；请以 `main` 分支中的 v1 Schema 和示例为准。v2 草案位于 [`v2` 分支](https://github.com/SmartTeachCN/CSES/tree/v2)。
+
 ## 简介
 
 CSES 是一种通用的课程表交换格式，用于在不同软件之间交换课程表。它被设计为简单易用，可以轻松转换为其他格式，如 ClassIsland 格式。
@@ -40,4 +43,3 @@ CSES 是一种通用的课程表交换格式，用于在不同软件之间交换
 ## 协议
 
 [MIT](./LICENSE)
-
